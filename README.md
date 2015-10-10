@@ -26,6 +26,12 @@ $ kor yaml markdown < table.yml
 | --- | --- | --- |
 | 100 | 200 |  |
 |  | 500 | 600 |
+
+$ kor yaml --key=bar,foo markdown < table.yml
+| bar | foo |
+| --- | --- |
+| 200 | 100 |
+| 500 |  |
 ```
 
 ## Installation
