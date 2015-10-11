@@ -63,6 +63,25 @@ YAML
     end
   end
 
+  def test_gets_with_none_guess(t)
+    yaml = ready
+    opt = OptionParser.new
+    yaml.parse(opt)
+    opt.parse ["--guess-time=0"]
+    yaml.head
+
+    expects = [
+      [100, 200, nil],
+      [nil, 500, 600],
+      nil, nil, nil, nil, nil
+    ].each do |expect|
+      actual = yaml.gets
+      if actual != expect
+        t.error("expect #{expect} got #{actual}")
+      end
+    end
+  end
+
   def test_gets_with_prekeys(t)
     yaml = ready
     opt = OptionParser.new
@@ -79,6 +98,25 @@ YAML
       if actual != expect
         t.error("expect #{expect} got #{actual}")
       end
+    end
+  end
+
+  def test_e2e(t)
+    actual = `ruby -ryaml -e '3.times { [{"a"=>1},{"b"=>2},{"c"=>3}].each{|h| puts YAML.dump(h)} }' | bundle ex kor yaml --guess-time=3 csv`
+    expect = <<-CSV
+a,b,c
+1,,
+,2,
+,,3
+1,,
+,2,
+,,3
+1,,
+,2,
+,,3
+CSV
+    if actual != expect
+      t.error("expect #{expect.inspect} got #{actual.inspect}")
     end
   end
 
